@@ -3,6 +3,9 @@ package org.example;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Clasa reprezentująca węzeł grafu CPM
+ */
 public class Node {
     private String name;
     private Double activityDuration;

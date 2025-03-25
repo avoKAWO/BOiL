@@ -2,6 +2,9 @@ package org.example;
 
 import java.util.*;
 
+/**
+ * Clasa odpowiedzialna za tworzenie grafu CPM i przeprowadzanie wszelkich potrzebnych operacji na nim
+ */
 public class GraphCPM {
     private Map<String, Node> nodes;
 
@@ -9,14 +12,28 @@ public class GraphCPM {
         nodes = new HashMap<>();
     }
 
+    /**
+     * Dodaje węzły do grafu
+     * @param name nazwa węzła (nazwa zdarzenia)
+     * @param activityDuration czas trwania zdarzenia
+     */
     public void addNode(String name, Double activityDuration) {
         nodes.putIfAbsent(name, new Node(name, activityDuration));
     }
 
+    /**
+     * Tworzy połączenie skierowane pomiędzy węzłami
+     * @apiNote Aby stworzyć połączenie obustronne należy powtórzyć wywołanie metody z odwrotną kolejnością wartości
+     * @param from nazwa węzła(zdarzenia) z którego następuje połączenie
+     * @param to nazwa węzła(zdarzenia) do którego następuje połączenie
+     */
     public void addEdge(String from, String to) {
         nodes.get(from).addChild(nodes.get(to));
     }
 
+    /**
+     * Tworzy węzły początku i końca grafu, a także dodaje odpowiednie połączenia
+     */
     public void fixGraph() {
         Node startNode = new Node("Start", (double) 0);
         Node endNode = new Node("End", (double) 0);
@@ -40,6 +57,16 @@ public class GraphCPM {
         nodes.put("Start", startNode);
         nodes.put("End", endNode);
     }
+
+    /**
+     * Metoda dokonująca przejścia w przód czego wynikiem są wartości ES i EF węzłów
+     * Przykład użycia:
+     * <code>
+     *     graph.StepForward("Start", (double) 0);
+     * </code>
+     * @param startPoint nazwa miejsca z którego rozpoczynamy przechodzenie - zazwyczaj "Start"
+     * @param currentValue  wartość która będzie oznaczała początkową wartość ES pierwszego węzła - zazwyczaj (double) 0
+     */
     public void StepForward(String startPoint, Double currentValue) {
         Node currentNode = nodes.get(startPoint);
         if (currentNode == null) return;
@@ -55,13 +82,24 @@ public class GraphCPM {
             StepForward(child.getName(), currentValue);
         }
     }
+
+    /**
+     * Metoda dokonująca przejścia w tył po grafie czego wynikiem są LS i LF
+     * Przykład użycia:
+     * <code>
+     *     graph.StepBackward("Start");
+     * </code>
+     * @param startPoint nazwa miejsca z którego rozpoczynamy przechodzenie - zazwyczaj "Start"
+     * @return zwraca rekurencyjną wartość poprzedniego węzła
+     */
     public Double StepBackward(String startPoint) {
         Node currentNode = nodes.get(startPoint);
         Double currentValue = 0.0;
         if (currentNode == null) return null;
         
         for (Node child : currentNode.children) {
-            currentValue = StepBackward(child.getName());
+            Double temp = StepBackward(child.getName());
+            if(currentValue==0 || temp < currentValue) currentValue = temp;
         }
 
         if (Objects.equals(startPoint, "End")) {
@@ -80,6 +118,24 @@ public class GraphCPM {
 
         return lateStart;
     }
+
+    /**
+     * Metoda wyliczająca wartość rezerwy dla węzłów grafu
+     * @throws IllegalStateException błąd gdy LS-ES != LF-EF
+     */
+    public void CalculateReserve() throws IllegalStateException {
+        for (Node node : nodes.values()) {
+            Double temp = node.getLateStartTime() - node.getEarlyStartTime();
+            if (!temp.equals(node.getLateEndTime() - node.getEarlyEndTime())) {
+                throw new IllegalStateException("Error: Reserve value mismatch for node: " + node);
+            }
+            node.setReserve(temp);
+        }
+    }
+
+    /**
+     * Metoda wypisująca w Terminalu wszystkie połączenia w grafie
+     */
     void printGraphEdges() {
         for (Node node : nodes.values()) {
             System.out.print(node.getName() + " -> ");
@@ -89,6 +145,10 @@ public class GraphCPM {
             System.out.println();
         }
     }
+
+    /**
+     * Metoda wypisująca wszystkie dane węzłów grafu
+     */
     void printNodesData() {
         for (Node node : nodes.values()) {
             System.out.print(node.getName() + "("+node.getActivityDuration()+")" + ": ES = " + node.getEarlyStartTime() + "; EF = " + node.getEarlyEndTime() + "; LS = " + node.getLateStartTime() + "; LF = " + node.getLateEndTime()+"; R = " + node.getReserve()+ "\n");

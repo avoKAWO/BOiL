@@ -17,6 +17,7 @@ public class Main {
         graph.fixGraph();
         graph.StepForward("Start", (double) 0);
         graph.StepBackward("Start");
+        graph.CalculateReserve();
         graph.printGraphEdges();
         System.out.print("\n");
         graph.printNodesData();
