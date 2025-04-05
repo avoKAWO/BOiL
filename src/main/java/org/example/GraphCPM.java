@@ -2,6 +2,9 @@ package org.example;
 
 import java.util.*;
 
+import org.graphstream.graph.implementations.SingleGraph;
+import org.graphstream.graph.Graph;
+
 /**
  * Clasa odpowiedzialna za tworzenie grafu CPM i przeprowadzanie wszelkich potrzebnych operacji na nim
  */
@@ -154,4 +157,57 @@ public class GraphCPM {
             System.out.print(node.getName() + "("+node.getActivityDuration()+")" + ": ES = " + node.getEarlyStartTime() + "; EF = " + node.getEarlyEndTime() + "; LS = " + node.getLateStartTime() + "; LF = " + node.getLateEndTime()+"; R = " + node.getReserve()+ "\n");
         }
     }
+
+    /**
+     * Testowa wizualizacja grafu
+     */
+    public void visualizeGraph() {
+        Graph graph = new SingleGraph("CPM Graph");
+
+        // Dodaj węzły
+        for (Node node : nodes.values()) {
+            String label = node.getName() + "\n" +
+                    "ES:" + node.getEarlyStartTime() + "\n" +
+                    "EF:" + node.getEarlyEndTime() + "\n" +
+                    "LS:" + node.getLateStartTime() + "\n" +
+                    "LF:" + node.getLateEndTime() + "\n" +
+                    "R:" + node.getReserve();
+
+            org.graphstream.graph.Node gsNode = graph.addNode(node.getName());
+            gsNode.setAttribute("ui.label", label);
+
+            if (node.getReserve() == 0) {
+                gsNode.setAttribute("ui.class", "critical");
+            }
+        }
+
+        // Dodaj krawędzie
+        for (Node parent : nodes.values()) {
+            for (Node child : parent.children) {
+                String edgeId = parent.getName() + "->" + child.getName();
+                if (graph.getEdge(edgeId) == null) {
+                    graph.addEdge(edgeId, parent.getName(), child.getName(), true);
+                }
+            }
+        }
+
+        // Styl
+        graph.setAttribute("ui.stylesheet",
+                "node {" +
+                        "   text-size: 14px;" +
+                        "   fill-color: lightblue;" +
+                        "   shape: box;" +
+                        "}" +
+                        "node.critical {" +
+                        "   fill-color: red;" +
+                        "}" +
+                        "edge {" +
+                        "   arrow-shape: arrow;" +
+                        "   arrow-size: 10px, 5px;" +
+                        "   fill-color: gray;" +
+                        "}");
+
+        graph.display();
+    }
+
 }
