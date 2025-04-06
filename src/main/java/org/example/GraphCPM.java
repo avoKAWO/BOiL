@@ -172,7 +172,7 @@ public class GraphCPM {
         // Opis węzłów
         for (Node node : nodes.values()) {
             String label = String.format(
-                    "%s\nES: %.1f  EF: %.1f\nLS: %.1f  LF: %.1f\nR: %.1f",
+                    "%s\n  ES: %.1f  EF: %.1f\nLS: %.1f  LF: %.1f\nR: %.1f",
                     node.getName(),
                     node.getEarlyStartTime(),
                     node.getEarlyEndTime(),

@@ -23,6 +23,7 @@ public class Main {
         graph.printGraphEdges();
         System.out.print("\n");
         graph.printNodesData();
+
         graph.visualizeGraph();
     }
 }
