@@ -1,6 +1,8 @@
 package org.example;
 public class Main {
     public static void main(String[] args) {
+        System.setProperty("org.graphstream.ui", "swing");
+
         GraphCPM graph = new GraphCPM();
         graph.addNode( "A", 2.0);
         graph.addNode( "B", 5.0);
@@ -21,5 +23,7 @@ public class Main {
         graph.printGraphEdges();
         System.out.print("\n");
         graph.printNodesData();
+
+        graph.visualizeGraph();
     }
 }
