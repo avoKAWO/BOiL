@@ -20,9 +20,9 @@ public class Main {
         graph.StepForward("Start", (double) 0);
         graph.StepBackward("Start");
         graph.CalculateReserve();
-        graph.printGraphEdges();
+        //graph.printGraphEdges();
         System.out.print("\n");
-        graph.printNodesData();
+        //graph.printNodesData();
 
         graph.visualizeGraph();
     }

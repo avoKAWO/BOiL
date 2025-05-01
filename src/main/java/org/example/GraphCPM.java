@@ -4,16 +4,20 @@ import java.util.*;
 
 import org.graphstream.graph.implementations.SingleGraph;
 import org.graphstream.graph.Graph;
+import org.graphstream.graph.Edge;
 import org.graphstream.ui.view.Viewer;
 
 /**
- * Clasa odpowiedzialna za tworzenie grafu CPM i przeprowadzanie wszelkich potrzebnych operacji na nim
+ * Klasa odpowiedzialna za tworzenie grafu CPM i przeprowadzanie wszelkich potrzebnych operacji na nim
  */
 public class GraphCPM {
     private Map<String, Node> nodes;
+    private Graph graph;
+    private Viewer viewer;
 
     public GraphCPM() {
         nodes = new HashMap<>();
+        graph = null; // graf tworzony dopiero w visualizeGraph()
     }
 
     /**
@@ -34,15 +38,19 @@ public class GraphCPM {
      * @apiNote Aby stworzyć połączenie obustronne należy powtórzyć wywołanie metody z odwrotną kolejnością wartości
      */
     public void addEdge(String from, String to) {
+        if (!nodes.containsKey(from) || !nodes.containsKey(to)) return;
         nodes.get(from).addChild(nodes.get(to));
     }
 
     /**
-     * Tworzy węzły początku i końca grafu, a także dodaje odpowiednie połączenia
+     * Tworzy węzły początku i końca grafu oraz odpowiednie połączenia
      */
     public void fixGraph() {
-        Node startNode = new Node("Start", (double) 0);
-        Node endNode = new Node("End", (double) 0);
+        if (!nodes.containsKey("Start")) nodes.put("Start", new Node("Start", 0.0));
+        if (!nodes.containsKey("End")) nodes.put("End", new Node("End", 0.0));
+
+        Node startNode = nodes.get("Start");
+        Node endNode = nodes.get("End");
 
         Set<Node> nodesWithParents = new HashSet<>();
         Set<Node> allNodes = new HashSet<>(nodes.values());
@@ -52,24 +60,17 @@ public class GraphCPM {
         }
 
         for (Node node : allNodes) {
-            if (!nodesWithParents.contains(node)) {
+            if (!nodesWithParents.contains(node) && !node.getName().equals("Start") && !node.getName().equals("End")) {
                 startNode.addChild(node);
             }
-            if (node.children.isEmpty()) {
+            if (node.children.isEmpty() && !node.getName().equals("Start") && !node.getName().equals("End")) {
                 node.addChild(endNode);
             }
         }
-
-        nodes.put("Start", startNode);
-        nodes.put("End", endNode);
     }
 
     /**
-     * Metoda dokonująca przejścia w przód czego wynikiem są wartości ES i EF węzłów
-     * Przykład użycia:
-     * <code>
-     * graph.StepForward("Start", (double) 0);
-     * </code>
+     * Przejście w przód — ES i EF
      *
      * @param startPoint   nazwa miejsca z którego rozpoczynamy przechodzenie - zazwyczaj "Start"
      * @param currentValue wartość która będzie oznaczała początkową wartość ES pierwszego węzła - zazwyczaj (double) 0
@@ -83,19 +84,13 @@ public class GraphCPM {
         double earlyEnd = earlyStart + currentNode.getActivityDuration();
         currentNode.setEarlyEndTime(earlyEnd);
 
-        currentValue = earlyEnd;
-
         for (Node child : currentNode.children) {
-            StepForward(child.getName(), currentValue);
+            StepForward(child.getName(), earlyEnd);
         }
     }
 
     /**
-     * Metoda dokonująca przejścia w tył po grafie czego wynikiem są LS i LF
-     * Przykład użycia:
-     * <code>
-     * graph.StepBackward("Start");
-     * </code>
+     * Przejście w tył — LS i LF
      *
      * @param startPoint nazwa miejsca z którego rozpoczynamy przechodzenie - zazwyczaj "Start"
      * @return zwraca rekurencyjną wartość poprzedniego węzła
@@ -128,7 +123,7 @@ public class GraphCPM {
     }
 
     /**
-     * Metoda wyliczająca wartość rezerwy dla węzłów grafu
+     * Oblicza rezerwy i wykrywa niespójności
      *
      * @throws IllegalStateException błąd gdy LS-ES != LF-EF
      */
@@ -143,39 +138,26 @@ public class GraphCPM {
     }
 
     /**
-     * Metoda wypisująca w Terminalu wszystkie połączenia w grafie
+     * Odświeża wizualizację grafu po przeliczeniu CPM
      */
-    void printGraphEdges() {
-        for (Node node : nodes.values()) {
-            System.out.print(node.getName() + " -> ");
-            for (Node child : node.children) {
-                System.out.print(child.getName() + " ");
-            }
-            System.out.println();
-        }
-    }
-
-    /**
-     * Metoda wypisująca wszystkie dane węzłów grafu
-     */
-    void printNodesData() {
-        for (Node node : nodes.values()) {
-            System.out.print(node.getName() + "(" + node.getActivityDuration() + ")" + ": ES = " + node.getEarlyStartTime() + "; EF = " + node.getEarlyEndTime() + "; LS = " + node.getLateStartTime() + "; LF = " + node.getLateEndTime() + "; R = " + node.getReserve() + "\n");
-        }
-    }
-
-    /**
-     * Testowa wizualizacja grafu
-     */
-    private Viewer viewer;
     public void visualizeGraph() {
-        Graph graph = new SingleGraph("CPM Graph");
+        if (graph == null) {
+            graph = new SingleGraph("CPM Graph");
+            setupStyle();
+            viewer = graph.display();
+        }
 
-        // Opis węzłów
+        // Dodaj brakujące węzły do GraphStream
         for (Node node : nodes.values()) {
+            if (graph.getNode(node.getName()) == null) {
+                org.graphstream.graph.Node gsNode = graph.addNode(node.getName());
+                gsNode.setAttribute("ui.class", "noncritical");
+            }
+
             String label = String.format(
-                    "%s\n  ES: %.1f  EF: %.1f\nLS: %.1f  LF: %.1f\nR: %.1f",
+                    "%s (%.1f)\n  ES: %.1f  EF: %.1f\n LS: %.1f  LF: %.1f\nR: %.1f",
                     node.getName(),
+                    node.getActivityDuration(),
                     node.getEarlyStartTime(),
                     node.getEarlyEndTime(),
                     node.getLateStartTime(),
@@ -183,78 +165,65 @@ public class GraphCPM {
                     node.getReserve()
             );
 
-            org.graphstream.graph.Node gsNode = graph.addNode(node.getName());
+            org.graphstream.graph.Node gsNode = graph.getNode(node.getName());
             gsNode.setAttribute("ui.label", label);
 
-            // Ścieżka krytyczna — kolor czerwony
             if (Math.abs(node.getReserve()) < 1e-6) {
                 gsNode.setAttribute("ui.class", "critical");
             } else {
                 gsNode.setAttribute("ui.class", "noncritical");
-                if (node.getName().equals("Start")) {
-                    gsNode.setAttribute("ui.class", "critical");
-                }
             }
         }
 
-        // Krawędzie
+        // Dodaj brakujące krawędzie
         for (Node parent : nodes.values()) {
             for (Node child : parent.children) {
                 String edgeId = parent.getName() + "->" + child.getName();
                 if (graph.getEdge(edgeId) == null) {
                     graph.addEdge(edgeId, parent.getName(), child.getName(), true);
-
-                    // Sprawdź czy to połączenie jest częścią ścieżki krytycznej
-                    if (Math.abs(parent.getReserve()) < 1e-6 && Math.abs(child.getReserve()) < 1e-6) {
-                        graph.getEdge(edgeId).setAttribute("ui.class", "criticalEdge");
-                    } else {
-                        graph.getEdge(edgeId).setAttribute("ui.class", "defaultEdge");
-                    }
-                    if (parent.getName().equals("Start") && Math.abs(child.getReserve()) < 1e-6) {
-                        graph.getEdge(edgeId).setAttribute("ui.class", "criticalEdge");
-                    }
                 }
+
+                boolean critical = Math.abs(parent.getReserve()) < 1e-6 &&
+                        Math.abs(child.getReserve()) < 1e-6;
+
+                graph.getEdge(edgeId).setAttribute("ui.class", critical ? "criticalEdge" : "defaultEdge");
             }
-
-
-            // Stylizacja
-            graph.setAttribute("ui.stylesheet",
-                    "node {" +
-                            "   text-size: 16px;" +
-                            "   text-alignment: center;" +
-                            "   fill-color: lightblue;" +
-                            "   shape: box;" +
-                            "   size-mode: fit;" +
-                            "   padding: 10px;" +
-                            "   stroke-mode: plain;" +
-                            "   stroke-color: black;" +
-                            "}" +
-                            "node.critical {" +
-                            "   fill-color: #ff4d4d;" +
-                            "}" +
-                            "node.noncritical {" +
-                            "   fill-color: #87cefa;" +
-                            "}" +
-                            "edge.defaultEdge {" +
-                            "   arrow-shape: arrow;" +
-                            "   arrow-size: 10px, 6px;" +
-                            "   fill-color: gray;" +
-                            "   size: 2px;" +
-                            "}" +
-                            "edge.criticalEdge {" +
-                            "   arrow-shape: arrow;" +
-                            "   arrow-size: 10px, 6px;" +
-                            "   fill-color: red;" +
-                            "   size: 3px;" +
-                            "}"
-            );
-
-            if (viewer != null) {
-                viewer.close();
-            }
-
-
         }
-        graph.display();
+    }
+
+    /**
+     * Stylizacja grafu
+     */
+    private void setupStyle() {
+        graph.setAttribute("ui.stylesheet",
+                "node {" +
+                        "   text-size: 16px;" +
+                        "   text-alignment: center;" +
+                        "   fill-color: lightblue;" +
+                        "   shape: box;" +
+                        "   size-mode: fit;" +
+                        "   padding: 10px;" +
+                        "   stroke-mode: plain;" +
+                        "   stroke-color: black;" +
+                        "}" +
+                        "node.critical {" +
+                        "   fill-color: #ff4d4d;" +
+                        "}" +
+                        "node.noncritical {" +
+                        "   fill-color: #87cefa;" +
+                        "}" +
+                        "edge.defaultEdge {" +
+                        "   arrow-shape: arrow;" +
+                        "   arrow-size: 10px, 6px;" +
+                        "   fill-color: gray;" +
+                        "   size: 2px;" +
+                        "}" +
+                        "edge.criticalEdge {" +
+                        "   arrow-shape: arrow;" +
+                        "   arrow-size: 10px, 6px;" +
+                        "   fill-color: red;" +
+                        "   size: 3px;" +
+                        "}"
+        );
     }
 }
