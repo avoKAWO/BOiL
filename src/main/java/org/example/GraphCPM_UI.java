@@ -16,7 +16,7 @@ public class GraphCPM_UI {
     private void createAndShowGUI() {
         JFrame frame = new JFrame("CPM Graph Builder");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(600, 500);
+        frame.setSize(600, 550);
         frame.setLocationRelativeTo(null);
 
         JPanel mainPanel = new JPanel();
@@ -41,21 +41,38 @@ public class GraphCPM_UI {
         nodePanel.add(addNodeButton);
 
         // === Sekcja dodawania krawędzi ===
-        JPanel edgePanel = new JPanel(new GridLayout(3, 2, 10, 10));
+        JPanel edgePanel = new JPanel();
+        edgePanel.setLayout(new BoxLayout(edgePanel, BoxLayout.Y_AXIS));
         edgePanel.setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createEtchedBorder(), "Dodaj połączenie",
+                BorderFactory.createEtchedBorder(), "Dodaj połączenia",
                 TitledBorder.LEFT, TitledBorder.TOP));
 
+        // Pojedyncza krawędź
+        JPanel singleEdgePanel = new JPanel(new GridLayout(3, 2, 10, 10));
         JTextField edgeFromField = new JTextField();
         JTextField edgeToField = new JTextField();
         JButton addEdgeButton = new JButton("Dodaj krawędź");
 
-        edgePanel.add(new JLabel("Z węzła:"));
-        edgePanel.add(edgeFromField);
-        edgePanel.add(new JLabel("Do węzła:"));
-        edgePanel.add(edgeToField);
-        edgePanel.add(new JLabel());
-        edgePanel.add(addEdgeButton);
+        singleEdgePanel.add(new JLabel("Z węzła:"));
+        singleEdgePanel.add(edgeFromField);
+        singleEdgePanel.add(new JLabel("Do węzła:"));
+        singleEdgePanel.add(edgeToField);
+        singleEdgePanel.add(new JLabel());
+        singleEdgePanel.add(addEdgeButton);
+
+        // Wiele krawędzi
+        JPanel multiEdgePanel = new JPanel(new BorderLayout(5, 5));
+        JTextField multiEdgeField = new JTextField();
+        JButton addMultiEdgeButton = new JButton("Dodaj wiele krawędzi");
+
+        multiEdgePanel.add(new JLabel("Wiele krawędzi (np. A->B, B->C):"), BorderLayout.NORTH);
+        multiEdgePanel.add(multiEdgeField, BorderLayout.CENTER);
+        multiEdgePanel.add(addMultiEdgeButton, BorderLayout.EAST);
+
+        // Dodaj panele do edgePanel
+        edgePanel.add(singleEdgePanel);
+        edgePanel.add(Box.createVerticalStrut(10));
+        edgePanel.add(multiEdgePanel);
 
         // === Sekcja uruchomienia algorytmu ===
         JPanel actionPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -101,6 +118,36 @@ public class GraphCPM_UI {
             } else {
                 JOptionPane.showMessageDialog(frame, "Podaj nazwy obu węzłów.");
             }
+        });
+
+        addMultiEdgeButton.addActionListener(e -> {
+            String text = multiEdgeField.getText().trim();
+            if (text.isEmpty()) {
+                JOptionPane.showMessageDialog(frame, "Pole nie może być puste.");
+                return;
+            }
+
+            String[] pairs = text.split(",");
+            int added = 0, failed = 0;
+
+            for (String pair : pairs) {
+                String[] nodes = pair.trim().split("->");
+                if (nodes.length == 2) {
+                    String from = nodes[0].trim();
+                    String to = nodes[1].trim();
+                    try {
+                        graph.addEdge(from, to);
+                        added++;
+                    } catch (Exception ex) {
+                        failed++;
+                    }
+                } else {
+                    failed++;
+                }
+            }
+
+            JOptionPane.showMessageDialog(frame,
+                    "Dodano " + added + " krawędzi. Niepowodzenia: " + failed);
         });
 
         runCPMButton.addActionListener(e -> {

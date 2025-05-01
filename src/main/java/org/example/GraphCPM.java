@@ -4,6 +4,7 @@ import java.util.*;
 
 import org.graphstream.graph.implementations.SingleGraph;
 import org.graphstream.graph.Graph;
+import org.graphstream.ui.view.Viewer;
 
 /**
  * Clasa odpowiedzialna za tworzenie grafu CPM i przeprowadzanie wszelkich potrzebnych operacji na nim
@@ -166,6 +167,7 @@ public class GraphCPM {
     /**
      * Testowa wizualizacja grafu
      */
+    private Viewer viewer;
     public void visualizeGraph() {
         Graph graph = new SingleGraph("CPM Graph");
 
@@ -247,8 +249,12 @@ public class GraphCPM {
                             "}"
             );
 
-            graph.display();
-        }
+            if (viewer != null) {
+                viewer.close();
+            }
 
+
+        }
+        graph.display();
     }
 }
