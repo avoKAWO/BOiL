@@ -16,14 +16,14 @@ public class GraphCPM_UI {
     private void createAndShowGUI() {
         JFrame frame = new JFrame("CPM Graph Builder");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(600, 500);
+        frame.setSize(600, 550);
         frame.setLocationRelativeTo(null);
 
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         mainPanel.setBorder(new EmptyBorder(15, 15, 15, 15));
 
-        // === Sekcja dodawania węzła ===
+        //Sekcja dodawania węzła
         JPanel nodePanel = new JPanel(new GridLayout(3, 2, 10, 10));
         nodePanel.setBorder(BorderFactory.createTitledBorder(
                 BorderFactory.createEtchedBorder(), "Dodaj węzeł",
@@ -40,29 +40,44 @@ public class GraphCPM_UI {
         nodePanel.add(new JLabel());
         nodePanel.add(addNodeButton);
 
-        // === Sekcja dodawania krawędzi ===
-        JPanel edgePanel = new JPanel(new GridLayout(3, 2, 10, 10));
+        //Sekcja dodawania krawędzi
+        JPanel edgePanel = new JPanel();
+        edgePanel.setLayout(new BoxLayout(edgePanel, BoxLayout.Y_AXIS));
         edgePanel.setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createEtchedBorder(), "Dodaj połączenie",
+                BorderFactory.createEtchedBorder(), "Dodaj połączenia",
                 TitledBorder.LEFT, TitledBorder.TOP));
 
+        JPanel singleEdgePanel = new JPanel(new GridLayout(3, 2, 10, 10));
         JTextField edgeFromField = new JTextField();
         JTextField edgeToField = new JTextField();
         JButton addEdgeButton = new JButton("Dodaj krawędź");
 
-        edgePanel.add(new JLabel("Z węzła:"));
-        edgePanel.add(edgeFromField);
-        edgePanel.add(new JLabel("Do węzła:"));
-        edgePanel.add(edgeToField);
-        edgePanel.add(new JLabel());
-        edgePanel.add(addEdgeButton);
+        singleEdgePanel.add(new JLabel("Z węzła:"));
+        singleEdgePanel.add(edgeFromField);
+        singleEdgePanel.add(new JLabel("Do węzła:"));
+        singleEdgePanel.add(edgeToField);
+        singleEdgePanel.add(new JLabel());
+        singleEdgePanel.add(addEdgeButton);
 
-        // === Sekcja uruchomienia algorytmu ===
+        JPanel multiEdgePanel = new JPanel(new BorderLayout(5, 5));
+        JTextField multiEdgeField = new JTextField();
+        JButton addMultiEdgeButton = new JButton("Dodaj wiele krawędzi");
+
+        multiEdgePanel.add(new JLabel("Wiele krawędzi (np. A->B, B->C):"), BorderLayout.NORTH);
+        multiEdgePanel.add(multiEdgeField, BorderLayout.CENTER);
+        multiEdgePanel.add(addMultiEdgeButton, BorderLayout.EAST);
+
+        edgePanel.add(singleEdgePanel);
+        edgePanel.add(Box.createVerticalStrut(10));
+        edgePanel.add(multiEdgePanel);
+
+        //Sekcja uruchomienia algorytmu
         JPanel actionPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        JButton runCPMButton = new JButton("Uruchom CPM i pokaż graf");
+        JButton refreshButton = new JButton("Odśwież graf");
+        JButton runCPMButton = new JButton("Uruchom CPM");
         actionPanel.add(runCPMButton);
+        actionPanel.add(refreshButton);
 
-        // Dodanie paneli do głównego layoutu
         mainPanel.add(nodePanel);
         mainPanel.add(Box.createVerticalStrut(10));
         mainPanel.add(edgePanel);
@@ -72,13 +87,14 @@ public class GraphCPM_UI {
         frame.setContentPane(mainPanel);
         frame.setVisible(true);
 
-        // === Obsługa akcji ===
+        //Obsługa akcji
         addNodeButton.addActionListener(e -> {
             String name = nodeNameField.getText().trim();
             try {
                 double duration = Double.parseDouble(durationField.getText().trim());
                 if (!name.isEmpty()) {
                     graph.addNode(name, duration);
+                    //graph.visualizeGraph();
                     JOptionPane.showMessageDialog(frame, "Dodano węzeł \"" + name + "\".");
                 } else {
                     JOptionPane.showMessageDialog(frame, "Nazwa węzła nie może być pusta.");
@@ -94,6 +110,7 @@ public class GraphCPM_UI {
             if (!from.isEmpty() && !to.isEmpty()) {
                 try {
                     graph.addEdge(from, to);
+                    //graph.visualizeGraph();
                     JOptionPane.showMessageDialog(frame, "Dodano krawędź: " + from + " → " + to);
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(frame, "Niepoprawne dane krawędzi.");
@@ -103,6 +120,37 @@ public class GraphCPM_UI {
             }
         });
 
+        addMultiEdgeButton.addActionListener(e -> {
+            String text = multiEdgeField.getText().trim();
+            if (text.isEmpty()) {
+                JOptionPane.showMessageDialog(frame, "Pole nie może być puste.");
+                return;
+            }
+
+            String[] pairs = text.split(",");
+            int added = 0, failed = 0;
+
+            for (String pair : pairs) {
+                String[] nodes = pair.trim().split("->");
+                if (nodes.length == 2) {
+                    String from = nodes[0].trim();
+                    String to = nodes[1].trim();
+                    try {
+                        graph.addEdge(from, to);
+                        added++;
+                    } catch (Exception ex) {
+                        failed++;
+                    }
+                } else {
+                    failed++;
+                }
+            }
+
+            //graph.visualizeGraph();
+            JOptionPane.showMessageDialog(frame,
+                    "Dodano " + added + " krawędzi. Niepowodzenia: " + failed);
+        });
+
         runCPMButton.addActionListener(e -> {
             try {
                 graph.fixGraph();
@@ -110,6 +158,20 @@ public class GraphCPM_UI {
                 graph.StepBackward("Start");
                 graph.CalculateReserve();
                 graph.visualizeGraph();
+                JOptionPane.showMessageDialog(frame, "CPM został przeliczony");
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(frame, "Błąd podczas przetwarzania CPM:\n" + ex.getMessage());
+            }
+        });
+
+        refreshButton.addActionListener(e -> {
+            try {
+                graph.fixGraph();
+                //graph.StepForward("Start", 0.0);
+                //graph.StepBackward("Start");
+                graph.CalculateReserve();
+                graph.visualizeGraph();
+                JOptionPane.showMessageDialog(frame, "graf odświeżony.");
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(frame, "Błąd podczas przetwarzania CPM:\n" + ex.getMessage());
             }
