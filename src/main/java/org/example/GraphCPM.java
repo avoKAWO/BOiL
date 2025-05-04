@@ -153,7 +153,7 @@ public class GraphCPM {
             Viewer viewer = graph.display();
         }
 
-        // Dodaj brakujące węzły do GraphStream
+        // Dodanie brakujących węzłów do GraphStream
         for (Node node : nodes.values()) {
             if (graph.getNode(node.getName()) == null) {
                 org.graphstream.graph.Node gsNode = graph.addNode(node.getName());
@@ -181,7 +181,7 @@ public class GraphCPM {
             }
         }
 
-        // Dodaj brakujące krawędzie
+        // Dodanie brakujących krawędzi
         for (Node parent : nodes.values()) {
             for (Node child : parent.children) {
                 String edgeId = parent.getName() + "->" + child.getName();

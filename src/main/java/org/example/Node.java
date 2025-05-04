@@ -27,7 +27,6 @@ public class Node {
         this.earlyEndTime = (double) 0;
         this.lateStartTime = (double) 0;
         this.lateEndTime = (double) 0;
-
     }
     public void addChild(Node node) {
         children.add(node);
