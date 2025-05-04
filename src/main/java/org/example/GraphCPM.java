@@ -145,6 +145,7 @@ public class GraphCPM {
             graph = new SingleGraph("CPM Graph");
             setupStyle();
             viewer = graph.display();
+            viewer.enableAutoLayout();
         }
 
         // Dodaj brakujące węzły do GraphStream

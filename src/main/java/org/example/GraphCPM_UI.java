@@ -75,8 +75,10 @@ public class GraphCPM_UI {
         JPanel actionPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         JButton refreshButton = new JButton("Odśwież graf");
         JButton runCPMButton = new JButton("Uruchom CPM");
+        JButton loadFromFileButton = new JButton("Wczytaj z pliku");
         actionPanel.add(runCPMButton);
         actionPanel.add(refreshButton);
+        actionPanel.add(loadFromFileButton);
 
         mainPanel.add(nodePanel);
         mainPanel.add(Box.createVerticalStrut(10));
@@ -171,9 +173,46 @@ public class GraphCPM_UI {
                 //graph.StepBackward("Start");
                 graph.CalculateReserve();
                 graph.visualizeGraph();
-                JOptionPane.showMessageDialog(frame, "graf odświeżony.");
+                JOptionPane.showMessageDialog(frame, "Graf odświeżony.");
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(frame, "Błąd podczas przetwarzania CPM:\n" + ex.getMessage());
+                JOptionPane.showMessageDialog(frame, "Błąd podczas odświeżania:\n" + ex.getMessage());
+            }
+        });
+        loadFromFileButton.addActionListener(e -> {
+            JFileChooser fileChooser = new JFileChooser();
+            int result = fileChooser.showOpenDialog(frame);
+            if (result == JFileChooser.APPROVE_OPTION) {
+                try {
+                    java.io.File file = fileChooser.getSelectedFile();
+                    java.util.List<String> lines = java.nio.file.Files.readAllLines(file.toPath());
+                    int added = 0, failed = 0;
+
+                    for (String line : lines) {
+                        String[] parts = line.trim().split(",");
+                        if (parts.length == 3) {
+                            String name = parts[0].trim();
+                            String predecessor = parts[1].trim();
+                            String durationStr = parts[2].trim();
+                            try {
+                                double duration = Double.parseDouble(durationStr);
+                                graph.addNode(name, duration);
+                                if (!predecessor.isEmpty()) {
+                                    graph.addEdge(predecessor, name);
+                                }
+                                added++;
+                            } catch (Exception ex) {
+                                failed++;
+                            }
+                        } else {
+                            failed++;
+                        }
+                    }
+
+                    graph.visualizeGraph();
+                    JOptionPane.showMessageDialog(frame, "Wczytano " + added + " węzłów. Niepowodzenia: " + failed);
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(frame, "Błąd podczas wczytywania pliku:\n" + ex.getMessage());
+                }
             }
         });
     }
