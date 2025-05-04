@@ -101,12 +101,12 @@ public class GraphCPM {
      */
     public Double StepBackward(String startPoint) {
         Node currentNode = nodes.get(startPoint);
-        Double currentValue = 0.0;
+        Double currentValue = -1.0;
         if (currentNode == null) return null;
 
         for (Node child : currentNode.children) {
             Double temp = StepBackward(child.getName());
-            if (currentValue == 0 || temp < currentValue) currentValue = temp;
+            if (currentValue == -1 || temp < currentValue) currentValue = temp;
         }
 
         if (Objects.equals(startPoint, "End")) {
