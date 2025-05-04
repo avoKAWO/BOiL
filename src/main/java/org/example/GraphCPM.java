@@ -1,11 +1,14 @@
 package org.example;
 
-import java.util.*;
-
-import org.graphstream.graph.implementations.SingleGraph;
 import org.graphstream.graph.Graph;
-import org.graphstream.graph.Edge;
+import org.graphstream.graph.implementations.SingleGraph;
+//import org.graphstream.ui.layout.Layout;
+import org.graphstream.ui.layout.springbox.implementations.SpringBox;
 import org.graphstream.ui.view.Viewer;
+import org.graphstream.ui.layout.*;
+
+//import javax.swing.*;
+import java.util.*;
 
 /**
  * Klasa odpowiedzialna za tworzenie grafu CPM i przeprowadzanie wszelkich potrzebnych operacji na nim
@@ -144,8 +147,10 @@ public class GraphCPM {
         if (graph == null) {
             graph = new SingleGraph("CPM Graph");
             setupStyle();
-            viewer = graph.display();
-            viewer.enableAutoLayout();
+
+            Layout layout = new SpringBox();
+            graph.addSink(layout);
+            Viewer viewer = graph.display();
         }
 
         // Dodaj brakujące węzły do GraphStream
