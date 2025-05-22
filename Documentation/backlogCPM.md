@@ -2,7 +2,8 @@ Karol Woda\
 Wojciech Zacharski\
 Bartłomiej Warzecha
 
-# Backlog
+# Backlog CPM
+
 ## Struktura klasowa grafu CPM
 Stworzenie klasy Węzła i klasy Grafu które będą 
 #### Piorytet:<span style="color: red"> **L**</span>
