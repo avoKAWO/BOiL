@@ -1,6 +1,5 @@
 package org.example;
 
-import java.io.IOException;
 import java.util.Scanner;
 
 public class TextUI {
@@ -32,7 +31,17 @@ public class TextUI {
     }
 
     private static void TextUI_ZP() {
-
+        int suppliers_amount = 2, recipients_amount = 3;
+        double[] supply = {20, 30};
+        double[] unit_purchase_costs = {10, 12};
+        double[] demands = {10, 28, 27};
+        double[] purchase_costs = {30, 25, 30};
+        double[][] unit_transport_costs = {{8, 14, 17}, {12, 9, 19}};
+        ZP zp = new ZP(suppliers_amount, recipients_amount, supply, unit_purchase_costs, demands, purchase_costs, unit_transport_costs);
+        zp.calculate_unit_profits();
+        zp.print_unit_profits();
+        zp.calculate_transport_plan();
+        zp.print_transport_plan();
     }
 
     public static void main(String[] args) {
