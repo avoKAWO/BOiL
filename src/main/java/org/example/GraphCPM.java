@@ -3,6 +3,8 @@ package org.example;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.implementations.SingleGraph;
 //import org.graphstream.ui.layout.Layout;
+import org.graphstream.ui.layout.springbox.BarnesHutLayout;
+import org.graphstream.ui.layout.springbox.NodeParticle;
 import org.graphstream.ui.layout.springbox.implementations.SpringBox;
 import org.graphstream.ui.view.Viewer;
 import org.graphstream.ui.layout.*;
