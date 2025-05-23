@@ -1,8 +1,6 @@
 package org.example;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public class ZP {
@@ -11,26 +9,45 @@ public class ZP {
     private double[] supply;                    // podaż
     private double[] unit_purchase_costs;       // jednostkowe koszty zakupu
     private double[] demands;                   // popyt
-    private double[] unit_selling_price;                // ceny sprzedaży
+    private double[] unit_selling_price;        // ceny sprzedaży
     private double[][] unit_transport_costs;    // jednostkowe koszty transportu
     private double[][] unit_profits;            // Macierz zysków jednostkowych
     private double imagine_supply = 0;          // podaż fikcyjnego odbiorcy (OF)
     private double imagine_demand = 0;          // popyt fikcyjnego dostawcy (DF)
-    private double all_supply = 0;
-    private double all_demands = 0;
     private double[][] transport_plan;
+    private double[] alfa;
+    private double[] beta;
 
     public ZP(int suppliers_amount, int recipients_amount, double[] supply, double[] unit_purchase_costs, double[] demands, double[] unit_selling_price, double[][] unit_transport_costs) {
         this.suppliers_amount = suppliers_amount;
         this.recipients_amount = recipients_amount;
-        if (supply.length != suppliers_amount || unit_purchase_costs.length != suppliers_amount || demands.length != recipients_amount || unit_selling_price.length != recipients_amount || unit_transport_costs.length != suppliers_amount || unit_transport_costs[0].length != recipients_amount) throw new IllegalArgumentException();
+        if (supply.length != suppliers_amount)
+            throw new IllegalArgumentException("Supply array length (" + supply.length + ") does not match suppliers_amount (" + suppliers_amount + ").");
+
+        if (unit_purchase_costs.length != suppliers_amount)
+            throw new IllegalArgumentException("Unit purchase costs array length (" + unit_purchase_costs.length + ") does not match suppliers_amount (" + suppliers_amount + ").");
+
+        if (demands.length != recipients_amount)
+            throw new IllegalArgumentException("Demands array length (" + demands.length + ") does not match recipients_amount (" + recipients_amount + ").");
+
+        if (unit_selling_price.length != recipients_amount)
+            throw new IllegalArgumentException("Unit selling price array length (" + unit_selling_price.length + ") does not match recipients_amount (" + recipients_amount + ").");
+
+        if (unit_transport_costs.length != suppliers_amount)
+            throw new IllegalArgumentException("Unit transport costs row count (" + unit_transport_costs.length + ") does not match suppliers_amount (" + suppliers_amount + ").");
+
+        if (unit_transport_costs[0].length != recipients_amount)
+            throw new IllegalArgumentException("Unit transport costs column count (" + unit_transport_costs[0].length + ") does not match recipients_amount (" + recipients_amount + ").");
+
         this.supply = supply;
         this.unit_purchase_costs = unit_purchase_costs;
         this.demands = demands;
         this.unit_selling_price = unit_selling_price;
         this.unit_transport_costs = unit_transport_costs;
         unit_profits = new double[suppliers_amount][recipients_amount];
+        double all_supply = 0;
         for(double s : supply) all_supply += s;
+        double all_demands = 0;
         for(double d : demands) all_demands += d;
         if(all_demands == all_supply)
         {
@@ -42,8 +59,10 @@ public class ZP {
             imagine_supply = all_demands;
             imagine_demand = all_supply;
         }
+        alfa = new double[transport_plan.length];
+        beta = new double[transport_plan[0].length];
     }
-    public void calculate_unit_profits() {
+    public void calculateUnitProfits() {
         for (int i = 0; i < unit_profits.length; i++) {
             for (int j = 0; j < unit_profits[i].length; j++) {
                 if(i==suppliers_amount || j == recipients_amount) unit_profits[i][j] = 0;
@@ -53,11 +72,11 @@ public class ZP {
             }
         }
     }
-    public void print_unit_profits() {
+    public void printUnitProfits() {
         System.out.println("Unit profits matrix:");
-        for (int i = 0; i < unit_profits.length; i++) {
-            for (int j = 0; j < unit_profits[i].length; j++) {
-                System.out.printf("%10.2f", unit_profits[i][j]);
+        for (double[] unitProfit : unit_profits) {
+            for (double v : unitProfit) {
+                System.out.printf("%10.2f", v);
             }
             System.out.println();
         }
@@ -73,16 +92,11 @@ public class ZP {
             this.col = col;
         }
     }
-    public void calculate_transport_plan() {
-        int temp_i = 0;
-        int temp_j = 0;
-        double temp_value = unit_profits[0][0];
+    public void calculateTransportPlan() {
         double[] temp_supply = supply;
         double[] temp_demands = demands;
         double temp_imagine_supply = imagine_supply;
         double temp_imagine_demand = imagine_demand;
-        double temp_all_supply = all_supply;
-        double temp_all_demands = all_demands;
 
         List<ValueWithIndex> list = new ArrayList<>();
         for (int i = 0; i < unit_profits.length; i++) {
@@ -90,17 +104,11 @@ public class ZP {
                 list.add(new ValueWithIndex(unit_profits[i][j], i, j));
             }
         }
-        Collections.sort(list, new Comparator<ValueWithIndex>() {
-            public int compare(ValueWithIndex o1, ValueWithIndex o2) {
-                return Double.compare(o2.value, o1.value);
-            }
-        });
+        list.sort((o1, o2) -> Double.compare(o2.value, o1.value));
 
         for (ValueWithIndex item : list)
         {
-            double difference;
-            if (temp_supply[item.row] > temp_demands[item.col]) difference = temp_demands[item.col];
-            else difference = temp_supply[item.row];
+            double difference = Math.min(temp_supply[item.row], temp_demands[item.col]);
             transport_plan[item.row][item.col] = difference;
             temp_supply[item.row]-=difference;
             temp_demands[item.col]-=difference;
@@ -109,37 +117,34 @@ public class ZP {
             if(i==transport_plan.length-1)
             {
                 for (int j = 0; j < transport_plan[i].length-1; j++) {
-                    double difference;
-                    if (temp_imagine_supply > temp_demands[j]) difference = temp_demands[j];
-                    else difference = temp_imagine_supply;
+                    double difference = Math.min(temp_imagine_supply, temp_demands[j]);
                     transport_plan[i][j] = difference;
                     temp_imagine_supply-=difference;
                     temp_demands[j]-=difference;
                 }
-                double difference;
-                if (temp_imagine_supply > temp_imagine_demand) difference = temp_imagine_demand;
-                else difference = temp_imagine_supply;
+                double difference = Math.min(temp_imagine_supply, temp_imagine_demand);
                 transport_plan[i][transport_plan[i].length-1] = difference;
                 temp_imagine_supply-=difference;
                 temp_imagine_demand-=difference;
             }
             else {
-                double difference;
-                if (temp_supply[i] > temp_imagine_demand) difference = temp_imagine_demand;
-                else difference = temp_supply[i];
+                double difference = Math.min(temp_supply[i], temp_imagine_demand);
                 transport_plan[i][transport_plan[i].length-1] = difference;
                 temp_supply[i]-=difference;
                 temp_imagine_demand-=difference;
             }
         }
     }
-    public void print_transport_plan() {
+    public void printTransportPlan() {
         System.out.println("Transport plan:");
-        for (int i = 0; i < transport_plan.length; i++) {
-            for (int j = 0; j < transport_plan[i].length; j++) {
-                System.out.printf("%10.2f", transport_plan[i][j]);
+        for (double[] doubles : transport_plan) {
+            for (double aDouble : doubles) {
+                System.out.printf("%10.2f", aDouble);
             }
             System.out.println();
         }
+    }
+    public void calculateAlfaAndBeta(){
+
     }
 }

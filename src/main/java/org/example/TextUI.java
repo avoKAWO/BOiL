@@ -37,11 +37,18 @@ public class TextUI {
         double[] demands = {10, 28, 27};
         double[] purchase_costs = {30, 25, 30};
         double[][] unit_transport_costs = {{8, 14, 17}, {12, 9, 19}};
-        ZP zp = new ZP(suppliers_amount, recipients_amount, supply, unit_purchase_costs, demands, purchase_costs, unit_transport_costs);
-        zp.calculate_unit_profits();
-        zp.print_unit_profits();
-        zp.calculate_transport_plan();
-        zp.print_transport_plan();
+        ZP zp;
+        try {
+            zp = new ZP(suppliers_amount, recipients_amount, supply, unit_purchase_costs, demands, purchase_costs, unit_transport_costs);
+        }
+        catch (Exception e) {
+            System.out.println("An error occurred while creating the ZP object: " + e.getMessage());
+            return;
+        }
+        zp.calculateUnitProfits();
+        zp.printUnitProfits();
+        zp.calculateTransportPlan();
+        zp.printTransportPlan();
     }
 
     public static void main(String[] args) {
