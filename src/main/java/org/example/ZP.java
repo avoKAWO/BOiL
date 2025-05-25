@@ -180,4 +180,77 @@ public class ZP {
         for (double b : beta) System.out.printf("%10.2f", b);
         System.out.println();
     }
+    private double[][] calculateDelta() {
+        double[][] delta = new double[transport_plan.length][transport_plan[0].length];
+        for (int i = 0; i < transport_plan.length; i++) {
+            for (int j = 0; j < transport_plan[i].length; j++) {
+                if (transport_plan[i][j] == 0) {
+                    if (i < unit_profits.length && j < unit_profits[i].length) delta[i][j] = unit_profits[i][j] - alfa[i] - beta[j];
+                    else delta[i][j] = - alfa[i] - beta[j];
+                } else {
+                    delta[i][j] = Double.NEGATIVE_INFINITY;
+                }
+            }
+        }
+        return delta;
+    }
+    public void optimizeTransportPlan() {
+        while (true) {
+            calculateAlfaAndBeta();
+            double[][] delta = calculateDelta();
+
+            // Szukamy największego dodatniego delta
+            double maxDelta = 0;
+            int maxI = -1, maxJ = -1;
+            for (int i = 0; i < delta.length; i++) {
+                for (int j = 0; j < delta[i].length; j++) {
+                    if (delta[i][j] > maxDelta) {
+                        maxDelta = delta[i][j];
+                        maxI = i;
+                        maxJ = j;
+                    }
+                }
+            }
+
+            if (maxDelta <= 0) {
+                System.out.println("Optimal plan — no positive criterion variables.");
+                break;
+            }
+
+            // Jeśli jest dodatnie delta, tworzymy pętlę zamkniętą i modyfikujemy plan
+            System.out.println("Optimization: largest delta = " + maxDelta + " for (" + maxI + "," + maxJ + ")");
+
+            // Prosty algorytm: znajdź minimum z dostępnych w tej kolumnie i wierszu
+            double minValue = Double.MAX_VALUE;
+            int minI = -1, minJ = -1;
+
+            // Szukamy minimum w wierszu maxI (pomijając maxJ)
+            for (int j = 0; j < transport_plan[maxI].length; j++) {
+                if (j != maxJ && transport_plan[maxI][j] > 0 && transport_plan[maxI][j] < minValue) {
+                    minValue = transport_plan[maxI][j];
+                    minI = maxI;
+                    minJ = j;
+                }
+            }
+            // Szukamy minimum w kolumnie maxJ (pomijając maxI)
+            for (int i = 0; i < transport_plan.length; i++) {
+                if (i != maxI && transport_plan[i][maxJ] > 0 && transport_plan[i][maxJ] < minValue) {
+                    minValue = transport_plan[i][maxJ];
+                    minI = i;
+                    minJ = maxJ;
+                }
+            }
+
+            if (minValue == Double.MAX_VALUE) {
+                System.out.println("No possible loop for (" + maxI + "," + maxJ + ")");
+                break;
+            }
+
+            // Zmieniamy plan: dodajemy minValue w maxI,maxJ a odejmujemy z minI,minJ
+            transport_plan[maxI][maxJ] += minValue;
+            transport_plan[minI][minJ] -= minValue;
+
+            System.out.println("Added " + minValue + " to (" + maxI + "," + maxJ + "), subtracted from (" + minI + "," + minJ + ")");
+        }
+    }
 }

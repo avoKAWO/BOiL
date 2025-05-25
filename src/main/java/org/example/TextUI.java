@@ -31,17 +31,24 @@ public class TextUI {
     }
 
     private static void TextUI_ZP() {
-        int suppliers_amount = 2, recipients_amount = 3;
-        double[] supply = {20, 30};
-        double[] unit_purchase_costs = {10, 12};
-        double[] demands = {10, 28, 27};
-        double[] purchase_costs = {30, 25, 30};
-        double[][] unit_transport_costs = {{8, 14, 17}, {12, 9, 19}};
+//        int suppliers_amount = 2, recipients_amount = 3;
+//        double[] supply = {20, 30};
+//        double[] unit_purchase_costs = {10, 12};
+//        double[] demands = {10, 28, 27};
+//        double[] purchase_costs = {30, 25, 30};
+//        double[][] unit_transport_costs = {{8, 14, 17}, {12, 9, 19}};
+//        ZP zp;
+//        try {
+//            zp = new ZP(suppliers_amount, recipients_amount, supply, unit_purchase_costs, demands, purchase_costs, unit_transport_costs);
+//        }
+//        catch (Exception e) {
+//            System.out.println("An error occurred while creating the ZP object: " + e.getMessage());
+//            return;
+//        }
         ZP zp;
         try {
-            zp = new ZP(suppliers_amount, recipients_amount, supply, unit_purchase_costs, demands, purchase_costs, unit_transport_costs);
-        }
-        catch (Exception e) {
+            zp = FileLoader.loadZPFromFile("ZP_data.txt");
+        } catch (Exception e) {
             System.out.println("An error occurred while creating the ZP object: " + e.getMessage());
             return;
         }
@@ -51,6 +58,8 @@ public class TextUI {
         zp.printTransportPlan();
         zp.calculateAlfaAndBeta();
         zp.printAlfaAndBeta();
+        zp.optimizeTransportPlan();
+        zp.printTransportPlan();
     }
 
     public static void main(String[] args) {

@@ -1,0 +1,18 @@
+# liczba dostawców i odbiorców
+2 3
+
+# Podaż
+20 30
+
+# koszty zakupu jednostkowego
+10 12
+
+# Popyt
+10 28 27
+
+# koszty zakupu u odbiorców
+30 25 30
+
+# macierz kosztów transportu
+8 14 17
+12 9 19
