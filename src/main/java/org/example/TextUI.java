@@ -31,27 +31,27 @@ public class TextUI {
     }
 
     private static void TextUI_ZP() {
-//        int suppliers_amount = 2, recipients_amount = 3;
-//        double[] supply = {20, 30};
-//        double[] unit_purchase_costs = {10, 12};
-//        double[] demands = {10, 28, 27};
-//        double[] purchase_costs = {30, 25, 30};
-//        double[][] unit_transport_costs = {{8, 14, 17}, {12, 9, 19}};
-//        ZP zp;
-//        try {
-//            zp = new ZP(suppliers_amount, recipients_amount, supply, unit_purchase_costs, demands, purchase_costs, unit_transport_costs);
-//        }
-//        catch (Exception e) {
-//            System.out.println("An error occurred while creating the ZP object: " + e.getMessage());
-//            return;
-//        }
+        Scanner scanner = new Scanner(System.in);
+        String fileName;
+
+        System.out.println("[ The Intermediary Problem (ZP) ]\nDo you want to provide a custom file name? (y/n)");
+        String choice = scanner.nextLine();
+
+        if (choice.equalsIgnoreCase("y")) {
+            System.out.println("Enter the file name:");
+            fileName = scanner.nextLine();
+        } else {
+            fileName = "ZP_data.txt";
+        }
+
         ZP zp;
         try {
-            zp = FileLoader.loadZPFromFile("ZP_data.txt");
+            zp = FileLoader.loadZPFromFile(fileName);
         } catch (Exception e) {
             System.out.println("An error occurred while creating the ZP object: " + e.getMessage());
             return;
         }
+
         zp.calculateUnitProfits();
         zp.printUnitProfits();
         zp.calculateTransportPlan();
@@ -60,6 +60,10 @@ public class TextUI {
         zp.printAlfaAndBeta();
         zp.optimizeTransportPlan();
         zp.printTransportPlan();
+
+        System.out.println("Total cost: " + zp.calculateTotalCost());
+        System.out.println("Income: " + zp.calculateIncome());
+        System.out.println("Profit: " + zp.calculateProfit());
     }
 
     public static void main(String[] args) {

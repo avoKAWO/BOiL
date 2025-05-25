@@ -253,4 +253,31 @@ public class ZP {
             System.out.println("Added " + minValue + " to (" + maxI + "," + maxJ + "), subtracted from (" + minI + "," + minJ + ")");
         }
     }
+    public double calculateTotalCost() {
+        double totalCost = 0;
+        for (int i = 0; i < suppliers_amount; i++) {
+            for (int j = 0; j < recipients_amount; j++) {
+                totalCost += transport_plan[i][j] * (unit_purchase_costs[i] + unit_transport_costs[i][j]);
+            }
+        }
+        return totalCost;
+    }
+    public double calculateIncome() {
+        double income = 0;
+        for (int i = 0; i < suppliers_amount; i++) {
+            for (int j = 0; j < recipients_amount; j++) {
+                income += transport_plan[i][j] * unit_selling_price[j];
+            }
+        }
+        return income;
+    }
+    public double calculateProfit() {
+        double profit = 0;
+        for (int i = 0; i < suppliers_amount; i++) {
+            for (int j = 0; j < recipients_amount; j++) {
+                profit += transport_plan[i][j] * unit_profits[i][j];
+            }
+        }
+        return profit;
+    }
 }
