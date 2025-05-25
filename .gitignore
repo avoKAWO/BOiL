@@ -37,3 +37,4 @@ build/
 ### Mac OS ###
 .DS_Store
 /Documentation/backlogCPM.pdf
+/.idea/inspectionProfiles/Project_Default.xml
