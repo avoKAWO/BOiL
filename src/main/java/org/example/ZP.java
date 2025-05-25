@@ -1,6 +1,7 @@
 package org.example;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ZP {
@@ -61,6 +62,8 @@ public class ZP {
         }
         alfa = new double[transport_plan.length];
         beta = new double[transport_plan[0].length];
+        Arrays.fill(alfa, Double.NaN);
+        Arrays.fill(beta, Double.NaN);
     }
     public void calculateUnitProfits() {
         for (int i = 0; i < unit_profits.length; i++) {
@@ -145,6 +148,36 @@ public class ZP {
         }
     }
     public void calculateAlfaAndBeta(){
+        alfa[alfa.length-1] = 0;
 
+        boolean updated;
+        do {
+            updated = false;
+            for (int i = 0; i < transport_plan.length; i++) {
+                for (int j = 0; j < transport_plan[i].length; j++) {
+                    if (transport_plan[i][j] > 0) {
+                        if (!Double.isNaN(alfa[i]) && Double.isNaN(beta[j])) {
+                            if (i < unit_profits.length && j < unit_profits[i].length) beta[j] = unit_profits[i][j] - alfa[i];
+                            else if (alfa[i]!=0) beta[j] = -alfa[i];
+                            else beta[j] = alfa[i];
+                            updated = true;
+                        } else if (Double.isNaN(alfa[i]) && !Double.isNaN(beta[j])) {
+                            if (i < unit_profits.length && j < unit_profits[i].length) alfa[i] = unit_profits[i][j] - beta[j];
+                            else  if (beta[i]!=0) alfa[i] = -beta[j];
+                            else beta[j] = alfa[i];
+                            updated = true;
+                        }
+                    }
+                }
+            }
+        } while (updated);
+    }
+    public void printAlfaAndBeta() {
+        System.out.println("Alfa and Beta:");
+        System.out.print("Alfa: ");
+        for (double a : alfa) System.out.printf("%10.2f", a);
+        System.out.print("\nBeta: ");
+        for (double b : beta) System.out.printf("%10.2f", b);
+        System.out.println();
     }
 }

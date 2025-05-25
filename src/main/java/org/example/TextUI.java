@@ -49,6 +49,8 @@ public class TextUI {
         zp.printUnitProfits();
         zp.calculateTransportPlan();
         zp.printTransportPlan();
+        zp.calculateAlfaAndBeta();
+        zp.printAlfaAndBeta();
     }
 
     public static void main(String[] args) {
