@@ -113,8 +113,8 @@ Projekt został zrealizowany zespołowo przez studentów kierunku ___:
 
 Szczegółowe backlogi i harmonogramy prac znajdują się w folderze [`Documentation/`](./Documentation):
 
-- [`backlog_cpm.md`](./Documentation/backlog_cpm.md)
-- [`backlog_broker.md`](./Documentation/backlog_broker.md)
+- [`backlogCPM.md`](./Documentation/backlogCPM.md)
+- [`backlogZP.md`](./Documentation/backlogZP.md)
 
 ---
 
