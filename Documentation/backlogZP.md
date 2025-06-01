@@ -128,11 +128,11 @@ Przy uruchamianiu programu - zapytanie o ilość, przyciski dodawania dostawców
 
 ## Interfejs Graficzny: wyświetlanie wyników
 #### 📄 Opis:
-W osobnym oknie niż dane wejściowe
+Utworzenie okna, które będzie zawierać optymalny rozkład dostaw w tabeli oraz wyświetlać koszty zakupu, koszty transportu i dochód.
 #### 🧩 Przypadki użycia:
-
+Wyświetlanie wyników działania algorytmu metody pośrednika użytkownikowi.
 #### ✔️ Kryterium akceptacji:
-
+Okno wyświetla prawidłowe dane.
 #### Piorytet: 🟡 <span style="color: yellow"> **M**</span>
 #### Trudność: 🟡 <span style="color: yellow"> **M**</span>
 #### 👤 Wykonawca: **Wojciech Zacharski**
