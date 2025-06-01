@@ -71,8 +71,8 @@ Implementacja pełnego algorytmu optymalizacji metodą potencjałów lub metodą
 Wykonywany po sprawdzeniu nieoptymalności aktualnego rozkładu. Przesuwa ładunki zgodnie z wyznaczoną pętlą cykliczną.
 #### ✔️ Kryterium akceptacji:
 Po przeprowadzeniu optymalizacji zysk końcowy wzrasta lub pozostaje bez zmian (jeśli już optymalnie). Brak błędów przy zmianie alokacji.
-#### Piorytet:<span style="color: red"> **L**</span>
-#### Trudność:<span style="color: red"> **L**</span>
+#### Piorytet: 🔴 <span style="color: red"> **L**</span>
+#### Trudność: 🔴 <span style="color: red"> **L**</span>
 #### 👤 Wykonawca: **Karol Woda**
 #### 📅 Deadline: **25.05.2025**
 
