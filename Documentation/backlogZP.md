@@ -125,7 +125,7 @@ Użytkownik uruchamia program i określa liczbę dostawców i węzłów. Po uruc
 Formularz poprawnie tworzy i aktualizuje pola wejściowe dla podanej liczby dostawców i odbiorców.
 #### Piorytet: 🟡 <span style="color: yellow"> **M**</span>
 #### Trudność: 🔴 <span style="color: red"> **L**</span>
-#### 👤 Wykonawca: **Bartłomiej Warzecha **
+#### 👤 Wykonawca: **Bartłomiej Warzecha**
 #### 📅 Deadline: **05.06.2025**
 
 ## Interfejs Graficzny: wyświetlanie wyników
@@ -138,4 +138,4 @@ Okno wyświetla prawidłowe dane.
 #### Piorytet: 🟡 <span style="color: yellow"> **M**</span>
 #### Trudność: 🟡 <span style="color: yellow"> **M**</span>
 #### 👤 Wykonawca: **Wojciech Zacharski**
-#### 📅 Deadline: ****
+#### 📅 Deadline: **07.06.2025**
