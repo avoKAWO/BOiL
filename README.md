@@ -111,9 +111,10 @@ Projekt został zrealizowany zespołowo przez studentów kierunku ___:
 
 ## 📚 Dokumentacja projektowa
 
-Szczegółowe backlogi i harmonogramy prac znajdują się w folderze [`Documentation/`](./Documentation):
+Szczegółowe sprawozdania, backlogi i harmonogramy prac znajdują się w folderze [`Documentation/`](./Documentation):
 
 - [`backlogCPM.md`](./Documentation/backlogCPM.md)
+- [`reportCPM.md`](./Documentation/reportCPM.md)
 - [`backlogZP.md`](./Documentation/backlogZP.md)
 
 ---
