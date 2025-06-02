@@ -106,25 +106,27 @@ Po wczytaniu pliku system tworzy poprawną strukturę danych gotową do dalszych
 
 ## Interfejs Graficzny: przyjmowanie danych wejściowych
 #### 📄 Opis:
-W osobnym oknie niż wynik
+Stworzenie osobngo okna służącego do ręcznego wprowadzania danych wejściowych: popytu, podaży, kosztów i cen jednostkowych. Okno ma być oddzielone od widoku wyników.
 #### 🧩 Przypadki użycia:
+Użytkownik uruchamia program i wpisuje dane niezbędne do przeprowadzenia obliczeń.
 #### ✔️ Kryterium akceptacji:
+Dane można poprawnie wprowadzić, zatwierdzić i na ich posdtwaie wykonywane są obliczenia. W przypadku błędnych danych wyświetlany jest komunikat błędu.
 #### Piorytet: 🟡 <span style="color: yellow"> **M**</span>
 #### Trudność: 🔴 <span style="color: red"> **L**</span>
 #### 👤 Wykonawca: **Bartłomiej Warzecha**
-#### 📅 Deadline: ****
+#### 📅 Deadline: **05.06.2025**
 
 ## Interfejs Graficzny: dynamiczne dodawanie dostawców i odbiorców
 #### 📄 Opis:
-Przy uruchamianiu programu - zapytanie o ilość, przyciski dodawania dostawców i odbiorców
+Przy uruchamianiu programu - zapytanie o ilość, przyciski dodawania lub usunięcia dostawców i odbiorców
 #### 🧩 Przypadki użycia:
-
+Użytkownik uruchamia program i określa liczbę dostawców i węzłów. Po uruchomieniu programu jesteśmy w stanie dodać bądź usnąć dostawców lub odbiorców.
 #### ✔️ Kryterium akceptacji:
-
+Formularz poprawnie tworzy i aktualizuje pola wejściowe dla podanej liczby dostawców i odbiorców.
 #### Piorytet: 🟡 <span style="color: yellow"> **M**</span>
 #### Trudność: 🔴 <span style="color: red"> **L**</span>
 #### 👤 Wykonawca: **Bartłomiej Warzecha **
-#### 📅 Deadline: ****
+#### 📅 Deadline: **05.06.2025**
 
 ## Interfejs Graficzny: wyświetlanie wyników
 #### 📄 Opis:
