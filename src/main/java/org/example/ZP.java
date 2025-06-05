@@ -280,4 +280,15 @@ public class ZP {
         }
         return profit;
     }
+
+    public double[][] getUnitProfits() {return unit_profits; }
+    public double[][] getTransportPlan() { return transport_plan; }
+    public double[] getSupply() { return supply; }
+    public double[] getUnitPurchaseCosts() { return unit_purchase_costs; }
+    public double[] getDemands() { return demands; }
+    public double[] getUnitSellingPrice() { return unit_selling_price; }
+    public double[][] getUnitTransportCosts() { return unit_transport_costs; }
+    public double[] getAlfa() { return alfa; }
+    public double[] getBeta() { return beta; }
+
 }
