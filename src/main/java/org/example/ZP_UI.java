@@ -27,6 +27,11 @@ public class ZP_UI {
     // Pola tekstowe do cen sprzedaży jednostkowej
     private JTextField[] recipientUnitCostFields;
 
+    // Okno wyników
+    private JFrame resultFrame;
+    // Pole tekstowe okna wyników
+    private JTextArea outputArea;
+
     /**
      * Konstruktor inicjuje okno główne.
      */
@@ -378,12 +383,34 @@ public class ZP_UI {
             result.append(String.format("Zysk całkowity: %.2f\n", totalProfit));
 
             // Wyświetlenie wyników w osobnym oknie
-            JTextArea outputArea = new JTextArea(result.toString());
-            outputArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
-            outputArea.setEditable(false);
-            JScrollPane scrollPane = new JScrollPane(outputArea);
-            scrollPane.setPreferredSize(new Dimension(700, 400));
-            JOptionPane.showMessageDialog(inputFrame, scrollPane, "Wyniki", JOptionPane.INFORMATION_MESSAGE);
+//            JTextArea outputArea = new JTextArea(result.toString());
+//            outputArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
+//            outputArea.setEditable(false);
+//            JScrollPane scrollPane = new JScrollPane(outputArea);
+//            scrollPane.setPreferredSize(new Dimension(700, 400));
+//            JOptionPane.showMessageDialog(inputFrame, scrollPane, "Wyniki", JOptionPane.INFORMATION_MESSAGE);
+
+            if(resultFrame == null){
+                resultFrame = new JFrame("Wyniki");
+                resultFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+                outputArea = new JTextArea();
+                outputArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
+                outputArea.setEditable(false);
+
+                JScrollPane scrollPane = new JScrollPane(outputArea);
+                scrollPane.setPreferredSize(new Dimension(700, 400));
+
+                resultFrame.getContentPane().add(scrollPane);
+                resultFrame.pack();
+                resultFrame.setLocationRelativeTo(inputFrame);
+            }
+
+            outputArea.setText(result.toString());
+            if (!resultFrame.isVisible()){
+                resultFrame.setVisible(true);
+            }
+            resultFrame.toFront();
 
         } catch (NumberFormatException ex) {
             // komunikat pokazała już updateZPFromFields()
