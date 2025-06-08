@@ -383,13 +383,6 @@ public class ZP_UI {
             result.append(String.format("Zysk całkowity: %.2f\n", totalProfit));
 
             // Wyświetlenie wyników w osobnym oknie
-//            JTextArea outputArea = new JTextArea(result.toString());
-//            outputArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
-//            outputArea.setEditable(false);
-//            JScrollPane scrollPane = new JScrollPane(outputArea);
-//            scrollPane.setPreferredSize(new Dimension(700, 400));
-//            JOptionPane.showMessageDialog(inputFrame, scrollPane, "Wyniki", JOptionPane.INFORMATION_MESSAGE);
-
             if(resultFrame == null){
                 resultFrame = new JFrame("Wyniki");
                 resultFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

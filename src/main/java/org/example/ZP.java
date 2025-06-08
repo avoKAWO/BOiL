@@ -96,8 +96,8 @@ public class ZP {
         }
     }
     public void calculateTransportPlan() {
-        double[] temp_supply = supply;
-        double[] temp_demands = demands;
+        double[] temp_supply = supply.clone();
+        double[] temp_demands = demands.clone();
         double temp_imagine_supply = imagine_supply;
         double temp_imagine_demand = imagine_demand;
 
