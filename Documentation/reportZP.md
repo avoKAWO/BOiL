@@ -1,15 +1,27 @@
-**Zespół 10:**  
-Karol Woda  
-Wojciech Zacharski  
-Bartłomiej Warzecha  
+[//]: # (**Zespół 10:**  )
 
-**Przedmiot:** Badania Operacyjne i Logistyka  
-**Data:** 09.06.25  
-**Temat:** Zagadnienie pośrednika  
-**Kierunek:** WIMiIP ITE  
-**Rok:** 3  
-**Semestr:** 6  
-**Grupa:** 4  
+[//]: # (Karol Woda  )
+
+[//]: # (Wojciech Zacharski  )
+
+[//]: # (Bartłomiej Warzecha  )
+
+[//]: # ()
+[//]: # (**Przedmiot:** Badania Operacyjne i Logistyka  )
+
+[//]: # (**Data:** 09.06.25  )
+
+[//]: # (**Temat:** Zagadnienie pośrednika  )
+
+[//]: # (**Kierunek:** WIMiIP ITE  )
+
+[//]: # (**Rok:** 3  )
+
+[//]: # (**Semestr:** 6  )
+
+[//]: # (**Grupa:** 4  )
+
+![](Photos/1.png)
 
 ---
 
@@ -36,6 +48,16 @@ Projekt zarządzany był przez **Apache Maven**, który umożliwił m.in. defini
 Środowisko pracy: **Java SE Development Kit (JDK)**  dostarczająca zarówno kompilator `javac`, jak i zestaw narzędzi developerskich oraz bibliotek klas standardowych. Całość została zorganizowana w klasyczną strukturę projektową Mavena (src/main/java, src/main/resources, src/test/java), co ułatwia integrację z zewnętrznymi systemami CI/CD oraz zapewnia zgodność z dobrymi praktykami projektowymi w ekosystemie Java.
 
 ---
+
+## Przykład działania:
+
+- Wprowadzanie danych ręcznie:\
+    ![](Photos/2.png)
+- Wyświetlanie wyników:\
+    ![](Photos/3.png)
+- Wprowadzanie danych z pliku:\
+    ![img.png](Photos/5.png)
+
 
 ## Wybrane istotne fragmenty kodu
 
