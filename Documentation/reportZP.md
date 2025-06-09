@@ -39,10 +39,9 @@ Projekt zarządzany był przez **Apache Maven**, który umożliwił m.in. defini
 
 ## Wybrane istotne fragmenty kodu
 
+### Logika algorytmu
 
-### Logika 
-
-Obliczanie zysków jednostkowych
+#### Obliczanie zysków jednostkowych
 ```java
     public void calculateUnitProfits() {
         for (int i = 0; i < unit_profits.length; i++) {
@@ -56,7 +55,7 @@ Obliczanie zysków jednostkowych
     }
 ```
 
-Tworzenie planu transportu
+#### Tworzenie planu transportu
 ```java
  public void calculateTransportPlan() {
         double[] temp_supply = supply.clone();
@@ -103,7 +102,7 @@ Tworzenie planu transportu
     }
 ```
 
-Obliczanie współczynników alfa i beta
+#### Obliczanie współczynników alfa i beta
 ```java
     public void calculateAlfaAndBeta(){
         alfa[alfa.length-1] = 0;
@@ -131,7 +130,7 @@ Obliczanie współczynników alfa i beta
         } while (updated);
     }
 ```
-Sprawdzenie optymalności
+#### Sprawdzenie optymalności
 ```java
     private double[][] calculateDelta() {
         double[][] delta = new double[transport_plan.length][transport_plan[0].length];
@@ -149,7 +148,7 @@ Sprawdzenie optymalności
     }
 ```
 
-Optymalizacja planu dostaw
+#### Optymalizacja planu dostaw
 ```java
     public void optimizeTransportPlan() {
         while (true) {
@@ -214,7 +213,7 @@ Optymalizacja planu dostaw
 
 ### UI
 
-Wczytywanie danych z pliku .txt
+#### Wczytywanie danych z pliku .txt
 ```java
     private void loadDataFromFile() {
         JFileChooser fileChooser = new JFileChooser();
@@ -235,7 +234,7 @@ Wczytywanie danych z pliku .txt
     }
 ```
 
-Format pliku .txt
+#### Format pliku .txt z danymi wejściowymi
 ```
 # liczba dostawców i odbiorców
 2 3
@@ -256,7 +255,7 @@ Format pliku .txt
 8 14 17
 12 9 19
 ```
-Sprawdzenie poprawności danych wejściowych
+#### Sprawdzenie poprawności danych wejściowych
 ```java
         // Walidacja pól podaży
         for (int i = 0; i < suppliersCount; i++) {
@@ -311,7 +310,8 @@ Sprawdzenie poprawności danych wejściowych
             }
         }
 ```
-Uruchomienie algorytmu i wyprowadzenie wyników
+
+#### Uruchomienie algorytmu i wyprowadzenie wyników
 ```java
     private void runZPAndShowResult() {
         try {
@@ -327,7 +327,8 @@ Uruchomienie algorytmu i wyprowadzenie wyników
             double[] alfa = zp.getAlfa();
             double[] beta = zp.getBeta();
 ```
-Wyświetlanie wyników w osobnym oknie
+
+#### Wyświetlanie wyników w osobnym oknie
 ```java
             if(resultFrame == null){
                 resultFrame = new JFrame("Wyniki");
