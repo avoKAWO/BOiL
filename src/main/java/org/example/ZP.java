@@ -96,8 +96,8 @@ public class ZP {
         }
     }
     public void calculateTransportPlan() {
-        double[] temp_supply = supply;
-        double[] temp_demands = demands;
+        double[] temp_supply = supply.clone();
+        double[] temp_demands = demands.clone();
         double temp_imagine_supply = imagine_supply;
         double temp_imagine_demand = imagine_demand;
 
@@ -280,4 +280,15 @@ public class ZP {
         }
         return profit;
     }
+
+    public double[][] getUnitProfits() {return unit_profits; }
+    public double[][] getTransportPlan() { return transport_plan; }
+    public double[] getSupply() { return supply; }
+    public double[] getUnitPurchaseCosts() { return unit_purchase_costs; }
+    public double[] getDemands() { return demands; }
+    public double[] getUnitSellingPrice() { return unit_selling_price; }
+    public double[][] getUnitTransportCosts() { return unit_transport_costs; }
+    public double[] getAlfa() { return alfa; }
+    public double[] getBeta() { return beta; }
+
 }
